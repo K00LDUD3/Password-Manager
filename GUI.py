@@ -1,0 +1,567 @@
+from re import A
+from tkinter import *
+from tkinter import ttk
+import tkinter
+import tkinter.font as font
+from GenFunctions import GenFunc
+
+from random import sample as r
+from random import randint as ri
+
+#Creating window
+root = Tk()
+root.title('Used Car Pricing')
+
+#MISC
+pass_dot = '\u2022'
+current_user = None
+
+#FRAMES
+signChoose_frame = LabelFrame(root)
+signIn_frame = LabelFrame(root)
+signUp_frame = LabelFrame(root)
+home_frame = LabelFrame(root)
+addP_frame = LabelFrame(root)
+changeP_frame = LabelFrame(root)
+delP_frame = LabelFrame(root)
+getP_frame = LabelFrame(root)
+
+
+#WIDGET DICTIONARIES (GLOBAL to access anytime)
+#Button features
+button_dict = {
+            'master':None,
+            'act_bg':None, #Color
+            'act_fg':None, #Color
+            'bg':None, #Color
+            'fg':None, #Color
+            'border':None,
+            'font':None, #Font
+            'height':None, #Number
+            'highl_color':None, #Color
+            'image':None, #Img
+            'justify':None,
+            'padx':None, #Number
+            'pady':None, #Number
+            'relief':None,
+            'underline':None,
+            'w':None, #Number WIDTH
+            'wraplength':None
+        }
+#for label features
+label_dict = {
+            'master':None,
+            'anchor':None,
+            'bg':None,
+            'bitmap':None,
+            'bd':None,
+            'font':None,
+            'fg':None,
+            'height':None,
+            'image':None,
+            'justify':None,
+            'padx':None,
+            'pady':None,
+            'relief':None,
+            'text':None,
+            'textvar':None,
+            'underline':None,
+            'w':None,
+            'wraplength':None
+        }   
+#Entry features
+txtbox_width = 20
+ENTRY_DICT = {
+            'master':None,
+            'bd':None,
+            'height':None,
+            'width':txtbox_width,
+            'bg':None,
+            'fg':None,
+            'font':None,
+            'insertofftime':None,
+            'insertontime':None,
+            'padx':None,
+            'pady':None,
+            'highthick':None,
+            'charwidth':None,
+            'relief':None,
+            'yscrollcommand':None,
+            'xscrollcommand':None,
+        }
+#GRID features
+gd = {
+            'column':0,
+            'row':0,
+            'cspan':1,
+            'rspan':1,
+            'padx':10,
+            'pady':10,
+            'ipadx':None,
+            'ipady':None
+        }
+
+#Creating hide frame function
+#Used to hide previous frame so that new frame can safely come on screen
+def hideFrame(frame):
+    try:
+        frame.pack_forget()
+        for i in frame.winfo_children():
+            i.grid_forget()
+            i.destroy()
+    except (TypeError, AttributeError):
+        pass
+    finally:
+        return
+    
+#Getting next free coordinates starting from TOP LEFT
+def GetFreeCoor(arr):
+    taken = 1
+    free = 0
+    for i in range(len(arr)):
+        for j in range(len(arr[0])):
+            if arr[i][j] == free:
+                arr[i][j] = taken
+                return (i, j, arr)
+    return (None, None, arr)
+
+#Function to get username in a list (FOR DROPDOWN)
+def GetAccounts():
+    global current_user
+
+    #Get the account names (only usernames) as a list and return it 
+    
+
+#Choose whether to sign in or sign up
+def SignChoose(frame):
+    '''
+    Sign In/Up FRAME
+    '''
+    #Hiding previous frame to avoid colisions
+    hideFrame(frame=frame)
+    
+    current_user = None
+    s_gd = gd
+    s_bd = button_dict
+    s_gd['ipady'] = 5
+    s_bd['master'] = signChoose_frame
+    s_bd['w'] = 25
+
+    placements = [[0], [0], [0]]
+
+    # 0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    signIn_b = GenFunc('button', s_bd, 'Sign In', s_gd)
+    signIn_b.widg.config(command= lambda: SignIn(frame=signChoose_frame))
+
+    # 1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    signUp_b = GenFunc('button', s_bd, 'Sign Up', s_gd)
+    signUp_b.widg.config(command= lambda: SignUp(frame=signChoose_frame))
+
+    # 2
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    exit_b = GenFunc('button', s_bd, 'Exit', s_gd)
+    exit_b.widg.config(command= lambda: root.destroy())
+
+    signChoose_frame.pack()
+    
+    current_user = None
+    return
+
+def SignUp(frame):
+    '''
+    Sign Up FRAME
+    '''
+    #Hiding previous frame to avoid colisions
+    hideFrame(frame=frame)
+
+    s_gd = gd
+    s_bd = button_dict
+    s_ld = label_dict
+    s_ed = ENTRY_DICT
+    s_gd['ipady'] = 5
+    s_bd['master'] = signUp_frame
+    s_ld['master'] = signUp_frame
+    s_ed['master'] = signUp_frame
+    # s_bd['w'] = 20
+
+    placements = [[0,0],[0,0],[0,0],[0,0],[0,0]]
+
+    # 0,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    userPrompt_l = GenFunc('label', s_ld, 'Username: ', s_gd)
+
+    # 0,1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    user_e =  GenFunc('entry', s_ed, StringVar(), s_gd)
+
+    # 1,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    passPrompt_l =  GenFunc('label', s_ld, 'Password: ', s_gd)
+    
+    # 1,1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    pass_e =  GenFunc('entry', s_ed, StringVar(), s_gd)
+    pass_e.widg.config(show=pass_dot)
+
+    # 2,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    confpassprompt_l =  GenFunc('label', s_ld, 'Confirm Password: ', s_gd)
+    
+    # 2,1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    confpass_e =  GenFunc('entry', s_ed, StringVar(), s_gd)
+    confpass_e.widg.config(show=pass_dot)
+
+    # 3,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    s_gd['cspan'] = 2
+    msg_l =  GenFunc('label', s_ld, 'Enter Credentials', s_gd)
+    s_gd['cspan'] = 1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+
+    # 4,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    back_b =  GenFunc('button', s_bd, 'Back', s_gd)
+    back_b.widg.config(command= lambda: SignChoose(frame=signUp_frame))
+    
+    # 4,1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    go_b =  GenFunc('button', s_bd, 'Sign In', s_gd)
+    #go_b.widg.config(command=lambda: SignUpConf(user_e.widg.get(), pass_e.widg.get(), confpass_e.widg.get(), msg_l))
+    signUp_frame.pack()
+    return
+
+def SignIn(frame):
+    '''
+    Sign In FRAME
+    '''
+    #Hiding previous frame to avoid colisions
+    hideFrame(frame=frame)
+
+    s_gd = gd
+    s_bd = button_dict
+    s_ld = label_dict
+    s_ed = ENTRY_DICT
+    s_gd['ipady'] = 5
+    s_bd['master'] = signIn_frame
+    s_ld['master'] = signIn_frame
+    s_ed['master'] = signIn_frame
+    # s_bd['w'] = 20
+
+    placements = [[0,0],[0,0],[0,0],[0,0]]
+
+    # 0,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    userPrompt_l =   GenFunc('label', s_ld, 'Username: ', s_gd)
+
+    # 0,1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    user_e =   GenFunc('entry', s_ed, StringVar(), s_gd)
+
+    # 1,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    passPrompt_l =   GenFunc('label', s_ld, 'Password: ', s_gd)
+    
+    # 1,1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    pass_e =   GenFunc('entry', s_ed, StringVar(), s_gd)
+    pass_e.widg.config(show=pass_dot)
+    
+    # 2,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    s_gd['cspan'] = 2
+    msg_l =   GenFunc('label', s_ld, 'Enter Credentials', s_gd)
+    s_gd['cspan'] = 1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+
+    # 3,0
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    back_b =   GenFunc('button', s_bd, 'back', s_gd)
+    back_b.widg.config(command= lambda: SignChoose(frame=signIn_frame))
+
+    # 3,1
+    s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
+    go_b =   GenFunc('button', s_bd, 'Sign In', s_gd)
+    go_b.widg.config(command=lambda: CredVerSignIn(user_e.widg.get(), pass_e.widg.get(), msg_l))
+    signIn_frame.pack()
+    return
+
+def home(frame):
+    '''
+    Homescreen to display available options(sign out, start pricing)
+    '''
+    #Hiding previous frame to avoid colisions
+    hideFrame(frame=frame)
+    h_gd = gd
+    h_bd = button_dict
+    h_gd['ipady'] = 5
+    h_bd['master'] = home_frame
+
+    placements = [[0,0],[0,0],[0,0]]
+    
+    #0,0
+    h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
+    add_b = GenFunc('button', h_bd, 'Add Password', h_gd)
+    add_b.widg.config(command= lambda: Add(frame=home_frame))
+    #0,1
+    h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
+    change_b = GenFunc('button', h_bd, 'Change Password', h_gd)
+
+    #1,1
+    h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
+    del_b = GenFunc('button', h_bd, 'Delete Password', h_gd)
+    del_b.widg.config(command=lambda: Delete(frame=home_frame))
+
+    #2,1
+    h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
+    get_b = GenFunc('button', h_bd, 'Get Password', h_gd)
+
+    #2,0
+    h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
+    back_b = GenFunc('button', h_bd, 'Sign Out', h_gd)
+
+    home_frame.pack()
+    return
+
+def Add(frame):
+    '''Adding a password to DB,  MENU'''
+    #Hiding previous frame to avoid colisions
+    hideFrame(frame=frame)
+
+    a_bd = button_dict
+    a_bd['ipady'] = 5
+    a_bd['w'] = 35
+    a_bd['master'] = addP_frame
+    a_ld = label_dict
+    a_ld['master'] = addP_frame
+    a_ld['w'] = 14
+    a_ed = ENTRY_DICT
+    a_ed['master'] = addP_frame
+    a_gd = gd
+
+    placements = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+    
+    #Row 1
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    userPrompt_l = GenFunc('label', a_ld, 'Username:', a_gd)
+
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    user_e = GenFunc('entry', a_ed, StringVar(), a_gd)
+
+    #Row 2
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    passPrompt_l = GenFunc('label', a_ld, 'Password:', a_gd)
+
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    pass_e = GenFunc('entry', a_ed, StringVar(), a_gd)
+    pass_e.widg.config(show=pass_dot)
+
+    #Row 3
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    confPassPrompt_l = GenFunc('label', a_ld, 'Confirm Password:', a_gd)
+
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    confPass_e = GenFunc('entry', a_ed, StringVar(), a_gd)
+    confPass_e.widg.config(show=pass_dot)
+
+    #Row 4
+    a_gd['cspan'] = 2
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+
+    generate_b = GenFunc('button', a_bd, 'Generate Password', a_gd)
+    generate_b.widg.config(command= lambda: GenPass(generatedPass_e, pass_e, confPass_e))
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    a_gd['cspan'] = 1
+
+    #Row 5
+    a_gd['cspan'] = 2
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    a_ed['width'] = 44
+    generatedPass_e = GenFunc('entry', a_ed, '', a_gd)
+    generatedPass_e.widg.config(state='readonly')
+    a_ed['width'] = ENTRY_DICT['width'] = txtbox_width
+    print(ENTRY_DICT['width'])
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    a_gd['cspan'] = 1
+
+    #Row 6
+    a_gd['cspan'] = 2
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    msg_l = GenFunc('label', a_ld, '(ERR msg)', a_gd)
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    a_gd['cspan'] = 1
+    a_bd['w'] = 17
+
+    #Row 7
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    back_b = GenFunc('button', a_bd, 'Back', a_gd)
+    back_b.widg.config(command= lambda: home(frame=addP_frame))
+
+    a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
+    go_b = GenFunc('button', a_bd, 'Add Password', a_gd)
+    go_b.widg.config(command= lambda: AddPassConfirm(user_e.widg.get(), pass_e.widg.get(), confPass_e.widg.get(), msg_l))
+
+    addP_frame.pack()
+    return
+#generating a password for the user
+def GenPass(op_e, opPass_e, opConfPass_e):
+    char_set = '1234567uj890qwertyuiiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
+    password = ''.join(r(char_set[0:char_set.index('M')+1], ri(10,16)))
+    
+    op_e.widg.config(state='active')
+    ent_list = [op_e, opPass_e, opConfPass_e]
+    for i in ent_list:
+        i.widg.delete(0, END)
+        i.widg.insert(END, password)
+    
+    ent_list[0].widg.config(state='readonly')
+    return
+
+#Deleting a password from one of the users accounts
+def Delete(frame):
+    hideFrame(frame=frame)
+
+    d_bd = button_dict
+    d_bd['ipady'] = 5
+    d_bd['w'] = 17
+    d_bd['master'] = delP_frame
+    d_ld = label_dict
+    d_ld['master'] = delP_frame
+    d_ld['w'] = 14
+    d_ed = ENTRY_DICT
+    d_ed['master'] = delP_frame
+    d_gd = gd
+
+    #MISC
+    accounts = ['hello', 'hellasdfasfas'] #Add below line here
+    '''GetAccounts()''' #func definition at :128:
+
+
+    placements = [[0,0],[0,0],[0,0],[0,0],[0,0]]
+
+    #Row 1
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    acctPrompt_l = GenFunc('label', d_ld, 'Choose Account', d_gd)
+
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    combo = ttk.Combobox(master=delP_frame, values= accounts, state= 'readonly', width=15)
+    combo.current(0)
+    combo.grid(row=d_gd['row'], column=d_gd['column'])
+    combo.bind('<<ComboboxSelected>>', lambda event: msg_l.widg.config(text=''))
+
+    #Row 2
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    passPrompt_l = GenFunc('label', d_ld, 'Account Password:', d_gd)
+
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    acctPass_e = GenFunc('entry', d_ed, '', d_gd)
+
+    #Row 3
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    userPassPrompt_l = GenFunc('label', d_ld, 'Your Password', d_gd)
+
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    userPass_e = GenFunc('entry', d_ed, '', d_gd)
+
+    #Row 4
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    d_gd['cspan'] = 2
+    msg_l = GenFunc('label', d_ld, '(Err msg)', d_gd)
+    d_gd['cspan'] = 1
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+
+    #Row 5
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    back_b = GenFunc('button', d_bd, 'Back', d_gd)
+    back_b.widg.config(command=lambda: home(frame=delP_frame))
+
+    d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
+    go_b = GenFunc('button', d_bd, 'Delete Account', d_gd)
+    go_b.widg.config(command=lambda: DelPassConfirm(user=combo.get(), accountPass=acctPass_e.widg.get(), userPass=userPass_e.widg.get(), label_obj=msg_l))
+    delP_frame.pack()
+    return
+
+#WHILE signing IN
+def CredVerSignIn(user, password, lab_obj):
+    #if the credentials are valid excecute below block
+    '''
+    current_user = '<USERNAME HERE>'
+    return
+    #Leave the return statement alone, theyre  important
+    '''
+    home(frame=signIn_frame) #T=Include this before the RETURN statement
+    
+
+    #if not valid:
+    '''
+    lab_obj.widg.config(text='Invalid credentials!')
+    return
+    #leave this return statement alone too
+    '''
+
+    
+    return #Can take out this one once the above is done
+
+#User Verify for Signing UP
+def SignUpConf(user, password, conf_password, lab_obj):
+    #Check for password match
+    #check if username exists 
+    
+    #IF passwords dont match
+    '''
+    lab_obj.widg.config(text='passwords dont match')
+    return
+    '''
+    
+    #IF username already exists
+    '''
+    lab_obj.widg.config(text='username already exists')
+    return
+    '''
+    
+
+    #IF account is created 
+    '''
+    lab_obj.widg.config(text='Account created')
+    return
+    '''
+
+#Adding new acccount under a certain username
+def AddPassConfirm(user, password, confPass, label_obj):
+    print("REACHED CONFIRM FUNC")
+
+    global current_user
+    
+    #if passwords match and account creation is successful:
+    '''
+    label_obj.widg.config(text=f'Account Added to {current_user}')
+    return
+    '''
+    #ELSE:
+    '''
+    label_obj.widg.config(text='ERRor msg')    
+    return
+    '''
+
+def DelPassConfirm(user, accountPass, userPass, label_obj): #LOOK AT :438: modify the function "GetAccounts" to get the current users account names
+    print("REACHED CONFIRM FUNC")
+    global current_user
+    print(current_user)
+    #IF accountPass is matching (Col D), and userPass is matching (col B) AND account is deleted (in col C & D):
+    '''
+    label_obj.widg.config(text= 'Account deleted')
+    return
+    '''
+
+    #IF passwords dont match to their corresponding columns:
+    '''
+    label_obj.widg.config(text= 'invalid credentials')
+    return
+    '''
+
+    return
+
+SignChoose(None)
+root.mainloop()
