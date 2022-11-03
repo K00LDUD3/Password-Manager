@@ -3,6 +3,9 @@ from tkinter import *
 from tkinter import ttk
 import tkinter
 import tkinter.font as font
+from turtle import home
+
+import pyperclip
 from GenFunctions import GenFunc
 
 from random import sample as r
@@ -29,7 +32,7 @@ getP_frame = LabelFrame(root)
 
 #WIDGET DICTIONARIES (GLOBAL to access anytime)
 #Button features
-button_dict = {
+BUTTON_DICT = {
             'master':None,
             'act_bg':None, #Color
             'act_fg':None, #Color
@@ -49,7 +52,7 @@ button_dict = {
             'wraplength':None
         }
 #for label features
-label_dict = {
+LABEL_DICT = {
             'master':None,
             'anchor':None,
             'bg':None,
@@ -129,6 +132,7 @@ def GetFreeCoor(arr):
 def GetAccounts():
     global current_user
 
+    return ['hello','bye']
     #Get the account names (only usernames) as a list and return it 
     
 
@@ -142,7 +146,7 @@ def SignChoose(frame):
     
     current_user = None
     s_gd = gd
-    s_bd = button_dict
+    s_bd = BUTTON_DICT
     s_gd['ipady'] = 5
     s_bd['master'] = signChoose_frame
     s_bd['w'] = 25
@@ -177,8 +181,8 @@ def SignUp(frame):
     hideFrame(frame=frame)
 
     s_gd = gd
-    s_bd = button_dict
-    s_ld = label_dict
+    s_bd = BUTTON_DICT
+    s_ld = LABEL_DICT
     s_ed = ENTRY_DICT
     s_gd['ipady'] = 5
     s_bd['master'] = signUp_frame
@@ -241,8 +245,8 @@ def SignIn(frame):
     hideFrame(frame=frame)
 
     s_gd = gd
-    s_bd = button_dict
-    s_ld = label_dict
+    s_bd = BUTTON_DICT
+    s_ld = LABEL_DICT
     s_ed = ENTRY_DICT
     s_gd['ipady'] = 5
     s_bd['master'] = signIn_frame
@@ -288,14 +292,14 @@ def SignIn(frame):
     signIn_frame.pack()
     return
 
-def home(frame):
+def Home(frame):
     '''
     Homescreen to display available options(sign out, start pricing)
     '''
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
     h_gd = gd
-    h_bd = button_dict
+    h_bd = BUTTON_DICT
     h_gd['ipady'] = 5
     h_bd['master'] = home_frame
 
@@ -304,7 +308,7 @@ def home(frame):
     #0,0
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
     add_b = GenFunc('button', h_bd, 'Add Password', h_gd)
-    add_b.widg.config(command= lambda: Add(frame=home_frame))
+    add_b.widg.config(command= lambda: AddPassMenu(frame=home_frame))
     #0,1
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
     change_b = GenFunc('button', h_bd, 'Change Password', h_gd)
@@ -312,11 +316,12 @@ def home(frame):
     #1,1
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
     del_b = GenFunc('button', h_bd, 'Delete Password', h_gd)
-    del_b.widg.config(command=lambda: Delete(frame=home_frame))
+    del_b.widg.config(command=lambda: DeletePassMenu(frame=home_frame))
 
     #2,1
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
     get_b = GenFunc('button', h_bd, 'Get Password', h_gd)
+    get_b.widg.config(command=lambda: GetPass(frame=home_frame))
 
     #2,0
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
@@ -325,16 +330,16 @@ def home(frame):
     home_frame.pack()
     return
 
-def Add(frame):
+def AddPassMenu(frame):
     '''Adding a password to DB,  MENU'''
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
-    a_bd = button_dict
+    a_bd = BUTTON_DICT
     a_bd['ipady'] = 5
     a_bd['w'] = 35
     a_bd['master'] = addP_frame
-    a_ld = label_dict
+    a_ld = LABEL_DICT
     a_ld['master'] = addP_frame
     a_ld['w'] = 14
     a_ed = ENTRY_DICT
@@ -397,7 +402,7 @@ def Add(frame):
     #Row 7
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     back_b = GenFunc('button', a_bd, 'Back', a_gd)
-    back_b.widg.config(command= lambda: home(frame=addP_frame))
+    back_b.widg.config(command= lambda: Home(frame=addP_frame))
 
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     go_b = GenFunc('button', a_bd, 'Add Password', a_gd)
@@ -420,14 +425,14 @@ def GenPass(op_e, opPass_e, opConfPass_e):
     return
 
 #Deleting a password from one of the users accounts
-def Delete(frame):
+def DeletePassMenu(frame):
     hideFrame(frame=frame)
 
-    d_bd = button_dict
+    d_bd = BUTTON_DICT
     d_bd['ipady'] = 5
     d_bd['w'] = 17
     d_bd['master'] = delP_frame
-    d_ld = label_dict
+    d_ld = LABEL_DICT
     d_ld['master'] = delP_frame
     d_ld['w'] = 14
     d_ed = ENTRY_DICT
@@ -475,13 +480,63 @@ def Delete(frame):
     #Row 5
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     back_b = GenFunc('button', d_bd, 'Back', d_gd)
-    back_b.widg.config(command=lambda: home(frame=delP_frame))
+    back_b.widg.config(command=lambda: Home(frame=delP_frame))
 
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     go_b = GenFunc('button', d_bd, 'Delete Account', d_gd)
     go_b.widg.config(command=lambda: DelPassConfirm(user=combo.get(), accountPass=acctPass_e.widg.get(), userPass=userPass_e.widg.get(), label_obj=msg_l))
     delP_frame.pack()
     return
+
+#MENU for getting a certain account's password
+def GetPass(frame):
+    '''
+    MENU for getting an account password of a certain user
+    '''
+    hideFrame(frame=frame)
+
+    g_bd = BUTTON_DICT
+    g_bd['ipady'] = 5
+    g_bd['master'] = getP_frame
+    g_ld = LABEL_DICT
+    g_ld['master'] = getP_frame
+    g_ld['w'] = 14
+    g_gd = gd
+
+    placements = [[0,0],[0,0],[0,0]]
+
+    #Row 1
+    g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
+    acctPrompt_l = GenFunc('label', g_ld, 'Choose Account:', g_gd)
+    
+    g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
+    accounts = GetAccounts()
+    combo = ttk.Combobox(master=getP_frame, values= accounts, state= 'readonly', width=30)
+    combo.current(0)
+    combo.grid(row=g_gd['row'], column=g_gd['column'])
+    #combo.bind('<<ComboboxSelected>>', lambda event: msg_l.widg.config(text=''))
+
+    #Row 2
+    g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
+    g_gd['cspan'] = 2
+    g_ld['w'] = 30
+    msg_l = GenFunc('label', g_ld, '(msg label)', g_gd)
+    g_gd['cspan'] = 1
+    g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
+
+    #Row 3
+    g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
+    back_b = GenFunc('button', g_bd, 'Back', g_gd)
+    back_b.widg.config(command=lambda: Home(frame=getP_frame))
+
+    g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
+    go_b = GenFunc('button', g_bd, 'Get Password', g_gd)
+    go_b.widg.config(command=lambda: GetPassword(combo.get(), msg_l))
+
+    getP_frame.pack()
+    return
+
+
 
 #WHILE signing IN
 def CredVerSignIn(user, password, lab_obj):
@@ -491,7 +546,7 @@ def CredVerSignIn(user, password, lab_obj):
     return
     #Leave the return statement alone, theyre  important
     '''
-    home(frame=signIn_frame) #T=Include this before the RETURN statement
+    Home(frame=signIn_frame) #T=Include this before the RETURN statement
     
 
     #if not valid:
@@ -545,6 +600,7 @@ def AddPassConfirm(user, password, confPass, label_obj):
     return
     '''
 
+#Crosschecking credentials to verify a deletion of an account
 def DelPassConfirm(user, accountPass, userPass, label_obj): #LOOK AT :438: modify the function "GetAccounts" to get the current users account names
     print("REACHED CONFIRM FUNC")
     global current_user
@@ -562,6 +618,16 @@ def DelPassConfirm(user, accountPass, userPass, label_obj): #LOOK AT :438: modif
     '''
 
     return
+
+#Getting a certain user's password for a certain account
+def GetPassword(account, label_obj):
+    global current_user
+    print("REACHED CONFIRM FUNC")
+
+    password = 'assign pass here' 
+    label_obj.widg.config(text=f'\"{password}\" copied to clipboard')
+
+    pyperclip.copy(password)
 
 SignChoose(None)
 root.mainloop()
