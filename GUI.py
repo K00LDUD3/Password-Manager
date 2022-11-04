@@ -73,12 +73,12 @@ LABEL_DICT = {
             'wraplength':None
         }   
 #Entry features
-txtbox_width = 20
+default_entry_width = 26
 ENTRY_DICT = {
             'master':None,
             'bd':None,
             'height':None,
-            'width':txtbox_width,
+            'width':default_entry_width,
             'bg':None,
             'fg':None,
             'font':None,
@@ -300,6 +300,7 @@ def Home(frame):
     hideFrame(frame=frame)
     h_gd = gd
     h_bd = BUTTON_DICT
+    h_bd['w'] = 30
     h_gd['ipady'] = 5
     h_bd['master'] = home_frame
 
@@ -309,25 +310,32 @@ def Home(frame):
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
     add_b = GenFunc('button', h_bd, 'Add Password', h_gd)
     add_b.widg.config(command= lambda: AddPassMenu(frame=home_frame))
+
     #0,1
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
-    change_b = GenFunc('button', h_bd, 'Change Password', h_gd)
+    change_b = GenFunc('button', h_bd, 'Change Acct Password', h_gd)
+    change_b.widg.config(command=lambda: ChangePassMenu(frame=home_frame))
 
     #1,1
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
-    del_b = GenFunc('button', h_bd, 'Delete Password', h_gd)
+    del_b = GenFunc('button', h_bd, 'Delete An Account', h_gd)
     del_b.widg.config(command=lambda: DeletePassMenu(frame=home_frame))
 
     #2,1
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
-    get_b = GenFunc('button', h_bd, 'Get Password', h_gd)
+    get_b = GenFunc('button', h_bd, 'Get Account Password', h_gd)
     get_b.widg.config(command=lambda: GetPass(frame=home_frame))
 
     #2,0
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
+    h_bd['w'] = int(BUTTON_DICT['w']*2.2)
+    h_gd['cspan'] = 2
     back_b = GenFunc('button', h_bd, 'Sign Out', h_gd)
+    h_gd['cspan'] = 1
+    back_b.widg.config(command=lambda: SignChoose(frame=home_frame))
 
     home_frame.pack()
+    h_bd['w'] = 20
     return
 
 def AddPassMenu(frame):
@@ -337,7 +345,7 @@ def AddPassMenu(frame):
 
     a_bd = BUTTON_DICT
     a_bd['ipady'] = 5
-    a_bd['w'] = 35
+    a_bd['w'] = 43
     a_bd['master'] = addP_frame
     a_ld = LABEL_DICT
     a_ld['master'] = addP_frame
@@ -383,10 +391,10 @@ def AddPassMenu(frame):
     #Row 5
     a_gd['cspan'] = 2
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
-    a_ed['width'] = 44
+    a_ed['width'] = 55
     generatedPass_e = GenFunc('entry', a_ed, '', a_gd)
-    generatedPass_e.widg.config(state='readonly')
-    a_ed['width'] = ENTRY_DICT['width'] = txtbox_width
+    generatedPass_e.widg.config(state='readonly', justify=CENTER)
+    a_ed['width'] = default_entry_width
     print(ENTRY_DICT['width'])
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     a_gd['cspan'] = 1
@@ -397,9 +405,9 @@ def AddPassMenu(frame):
     msg_l = GenFunc('label', a_ld, '(ERR msg)', a_gd)
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     a_gd['cspan'] = 1
-    a_bd['w'] = 17
 
     #Row 7
+    a_bd['w'] = 20
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     back_b = GenFunc('button', a_bd, 'Back', a_gd)
     back_b.widg.config(command= lambda: Home(frame=addP_frame))
@@ -430,13 +438,14 @@ def DeletePassMenu(frame):
 
     d_bd = BUTTON_DICT
     d_bd['ipady'] = 5
-    d_bd['w'] = 17
+    #d_bd['w'] = 20
     d_bd['master'] = delP_frame
     d_ld = LABEL_DICT
     d_ld['master'] = delP_frame
     d_ld['w'] = 14
     d_ed = ENTRY_DICT
     d_ed['master'] = delP_frame
+    d_ed['width'] = 26
     d_gd = gd
 
     #MISC
@@ -451,7 +460,7 @@ def DeletePassMenu(frame):
     acctPrompt_l = GenFunc('label', d_ld, 'Choose Account', d_gd)
 
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
-    combo = ttk.Combobox(master=delP_frame, values= accounts, state= 'readonly', width=15)
+    combo = ttk.Combobox(master=delP_frame, values= accounts, state= 'readonly', width=23, justify=CENTER)
     combo.current(0)
     combo.grid(row=d_gd['row'], column=d_gd['column'])
     combo.bind('<<ComboboxSelected>>', lambda event: msg_l.widg.config(text=''))
@@ -485,6 +494,7 @@ def DeletePassMenu(frame):
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     go_b = GenFunc('button', d_bd, 'Delete Account', d_gd)
     go_b.widg.config(command=lambda: DelPassConfirm(user=combo.get(), accountPass=acctPass_e.widg.get(), userPass=userPass_e.widg.get(), label_obj=msg_l))
+    
     delP_frame.pack()
     return
 
@@ -498,6 +508,7 @@ def GetPass(frame):
     g_bd = BUTTON_DICT
     g_bd['ipady'] = 5
     g_bd['master'] = getP_frame
+    #g_bd['w'] = 20
     g_ld = LABEL_DICT
     g_ld['master'] = getP_frame
     g_ld['w'] = 14
@@ -511,7 +522,7 @@ def GetPass(frame):
     
     g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
     accounts = GetAccounts()
-    combo = ttk.Combobox(master=getP_frame, values= accounts, state= 'readonly', width=30)
+    combo = ttk.Combobox(master=getP_frame, values= accounts, state= 'readonly', width=23, justify=CENTER)
     combo.current(0)
     combo.grid(row=g_gd['row'], column=g_gd['column'])
     #combo.bind('<<ComboboxSelected>>', lambda event: msg_l.widg.config(text=''))
@@ -536,7 +547,69 @@ def GetPass(frame):
     getP_frame.pack()
     return
 
+def ChangePassMenu(frame):
+    '''
+    MENU for changing an account password of a certain user
+    '''
+    hideFrame(frame=frame)
 
+    c_bd = BUTTON_DICT
+    #c_bd['w'] = 20
+    c_bd['ipady'] = 5
+    c_bd['master'] = changeP_frame
+    c_ld = LABEL_DICT
+    c_ld['master'] = changeP_frame
+    c_ld['w'] = 14
+    c_ed = ENTRY_DICT
+    c_ed['master'] = changeP_frame
+    c_ed['width'] = 26
+    c_gd = gd
+
+    placements = [[0,0],[0,0],[0,0],[0,0],[0,0]]
+
+    #Row 1
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    acctPrompt_l = GenFunc('label', c_ld, 'Account:', c_gd)
+
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    accounts = GetAccounts()
+    combo = ttk.Combobox(master=changeP_frame, values= accounts, state= 'readonly', width=23, justify=CENTER)
+    combo.current(0)
+    combo.grid(row=c_gd['row'], column=c_gd['column'])
+
+    #Row 2
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    acctPassPrompt_l = GenFunc('label', c_ld, 'New Password:', c_gd)
+
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    newPass_e = GenFunc('entry', c_ed, '', c_gd)
+
+    #Row 3
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    userPassPrompt_l = GenFunc('label', c_ld, 'Your Password:', c_gd)
+
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    userPass_e = GenFunc('entry', c_ed, '', c_gd)
+
+    #Row 4
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    c_ld['w'] = 30
+    c_gd['cspan'] = 2
+    msg_l = GenFunc('label', c_ld, 'Fill Out Fields', c_gd)
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    c_ld['w'] = None
+    c_gd['cspan'] = 1
+
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    back_b = GenFunc('button', c_bd, 'Back', c_gd)
+    back_b.widg.config(command=lambda: Home(frame=changeP_frame))
+
+    c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
+    go_b = GenFunc('button', c_bd, 'Change Password', c_gd)
+    go_b.widg.config(command=lambda: ChangePassword(combo.get(), userPass_e.widg.get(), newPass_e.widg.get(), msg_l))
+    changeP_frame.pack()
+    c_ed['width'] = default_entry_width
+    return
 
 #WHILE signing IN
 def CredVerSignIn(user, password, lab_obj):
@@ -629,5 +702,11 @@ def GetPassword(account, label_obj):
 
     pyperclip.copy(password)
 
+#Changing a certain user's password for a certain account
+def ChangePassword(account, user_password, new_account_pass, label_obj):
+    '''Verify the USER_PASSWORD with column B and replace Column D with NEW_ACCOUNT_PASS'''
+    print('REACHED VER FUNC')
+    
+    return
 SignChoose(None)
 root.mainloop()
