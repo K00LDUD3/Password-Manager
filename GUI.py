@@ -14,7 +14,7 @@ from random import randint as ri
 #Creating window
 root = Tk()
 root.title('Used Car Pricing')
-
+root.resizable(False, False)
 #MISC
 pass_dot = '\u2022'
 current_user = None
@@ -132,7 +132,7 @@ def GetFreeCoor(arr):
 def GetAccounts():
     global current_user
 
-    return ['hello','bye']
+    return ['hello']
     #Get the account names (only usernames) as a list and return it 
     
 
@@ -143,6 +143,10 @@ def SignChoose(frame):
     '''
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
+
+    #Unbinding all hot keys to avoid errors
+    root.unbind_all('<Escape>')
+    root.unbind_all('<Return>')
     
     current_user = None
     s_gd = gd
@@ -179,6 +183,10 @@ def SignUp(frame):
     '''
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
+
+    #Unbinding all hot keys to avoid errors
+    root.unbind_all('<Escape>')
+    root.unbind_all('<Return>')
 
     s_gd = gd
     s_bd = BUTTON_DICT
@@ -244,6 +252,10 @@ def SignIn(frame):
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
+    #Unbinding all hot keys to avoid errors
+    root.unbind_all('<Escape>')
+    root.unbind_all('<Return>')
+
     s_gd = gd
     s_bd = BUTTON_DICT
     s_ld = LABEL_DICT
@@ -252,7 +264,7 @@ def SignIn(frame):
     s_bd['master'] = signIn_frame
     s_ld['master'] = signIn_frame
     s_ed['master'] = signIn_frame
-    # s_bd['w'] = 20
+    s_ed['width'] = default_entry_width + 7
 
     placements = [[0,0],[0,0],[0,0],[0,0]]
 
@@ -289,7 +301,10 @@ def SignIn(frame):
     s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
     go_b =   GenFunc('button', s_bd, 'Sign In', s_gd)
     go_b.widg.config(command=lambda: CredVerSignIn(user_e.widg.get(), pass_e.widg.get(), msg_l))
+
     signIn_frame.pack()
+    s_ed['width'] = default_entry_width
+    root.bind_all('<Return>', lambda e: CredVerSignIn(user_e.widg.get(), pass_e.widg.get(), msg_l))
     return
 
 def Home(frame):
@@ -298,6 +313,11 @@ def Home(frame):
     '''
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
+
+    #Unbinding all hot keys to avoid errors
+    root.unbind_all('<Escape>')
+    root.unbind_all('<Return>')
+
     h_gd = gd
     h_bd = BUTTON_DICT
     h_bd['w'] = 30
@@ -305,6 +325,8 @@ def Home(frame):
     h_bd['master'] = home_frame
 
     placements = [[0,0],[0,0],[0,0]]
+
+    accounts = GetAccounts()
     
     #0,0
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
@@ -334,14 +356,26 @@ def Home(frame):
     h_gd['cspan'] = 1
     back_b.widg.config(command=lambda: SignChoose(frame=home_frame))
 
+    if accounts == []:
+        #Disable chnage, delete, and get funcs since no accounts exist
+        get_b.widg.config(state='disabled')
+        change_b.widg.config(state='disabled')
+        del_b.widg.config(state='disabled')
+
     home_frame.pack()
     h_bd['w'] = 20
+    root.bind_all('<Escape>', lambda e: SignChoose(frame=home_frame))
     return
 
 def AddPassMenu(frame):
     '''Adding a password to DB,  MENU'''
+
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
+
+    #Unbinding all hot keys to avoid errors
+    root.unbind_all('<Escape>')
+    root.unbind_all('<Return>')
 
     a_bd = BUTTON_DICT
     a_bd['ipady'] = 5
@@ -417,7 +451,11 @@ def AddPassMenu(frame):
     go_b.widg.config(command= lambda: AddPassConfirm(user_e.widg.get(), pass_e.widg.get(), confPass_e.widg.get(), msg_l))
 
     addP_frame.pack()
+    root.bind_all('<Return>', lambda e: AddPassConfirm(user_e.widg.get(), pass_e.widg.get(), confPass_e.widg.get(), msg_l))
+    root.bind_all('<Escape>', lambda e: Home(frame=addP_frame))
     return
+
+
 #generating a password for the user
 def GenPass(op_e, opPass_e, opConfPass_e):
     char_set = '1234567uj890qwertyuiiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
@@ -436,6 +474,10 @@ def GenPass(op_e, opPass_e, opConfPass_e):
 def DeletePassMenu(frame):
     hideFrame(frame=frame)
 
+    #Unbinding all hot keys to avoid errors
+    root.unbind_all('<Escape>')
+    root.unbind_all('<Return>')
+
     d_bd = BUTTON_DICT
     d_bd['ipady'] = 5
     #d_bd['w'] = 20
@@ -445,11 +487,11 @@ def DeletePassMenu(frame):
     d_ld['w'] = 14
     d_ed = ENTRY_DICT
     d_ed['master'] = delP_frame
-    d_ed['width'] = 26
+    d_ed['width'] = default_entry_width
     d_gd = gd
 
     #MISC
-    accounts = ['hello', 'hellasdfasfas'] #Add below line here
+    accounts = GetAccounts()#['hello', 'hellasdfasfas'] #Add below line here
     '''GetAccounts()''' #func definition at :128:
 
 
@@ -461,7 +503,7 @@ def DeletePassMenu(frame):
 
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     combo = ttk.Combobox(master=delP_frame, values= accounts, state= 'readonly', width=23, justify=CENTER)
-    combo.current(0)
+
     combo.grid(row=d_gd['row'], column=d_gd['column'])
     combo.bind('<<ComboboxSelected>>', lambda event: msg_l.widg.config(text=''))
 
@@ -471,6 +513,7 @@ def DeletePassMenu(frame):
 
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     acctPass_e = GenFunc('entry', d_ed, '', d_gd)
+    acctPass_e.widg.config(show=pass_dot)
 
     #Row 3
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
@@ -478,11 +521,14 @@ def DeletePassMenu(frame):
 
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     userPass_e = GenFunc('entry', d_ed, '', d_gd)
+    userPass_e.widg.config(show=pass_dot)
 
     #Row 4
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     d_gd['cspan'] = 2
-    msg_l = GenFunc('label', d_ld, '(Err msg)', d_gd)
+    d_ld['width'] = 25
+    msg_l = GenFunc('label', d_ld, 'Fill Out Fields', d_gd)
+    d_ld['width'] = None
     d_gd['cspan'] = 1
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
 
@@ -493,9 +539,18 @@ def DeletePassMenu(frame):
 
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     go_b = GenFunc('button', d_bd, 'Delete Account', d_gd)
-    go_b.widg.config(command=lambda: DelPassConfirm(user=combo.get(), accountPass=acctPass_e.widg.get(), userPass=userPass_e.widg.get(), label_obj=msg_l))
+    go_b.widg.config(command=lambda: DelPassConfirm(account_name=combo.get(), accountPass=acctPass_e.widg.get(), userPass=userPass_e.widg.get(), label_obj=msg_l))
     
+    if accounts != []:
+        combo.current(0)
+        root.bind_all('<Escape>', lambda e: Home(frame=delP_frame))
+    else:
+        combo.config(state='disabled')
+        msg_l.widg.config(text='No acct, back to home in 5s')
+        root.after(5000, lambda: Home(frame=delP_frame))
+
     delP_frame.pack()
+    
     return
 
 #MENU for getting a certain account's password
@@ -504,6 +559,10 @@ def GetPass(frame):
     MENU for getting an account password of a certain user
     '''
     hideFrame(frame=frame)
+
+    #Unbinding all hot keys to avoid errors
+    root.unbind_all('<Escape>')
+    root.unbind_all('<Return>')
 
     g_bd = BUTTON_DICT
     g_bd['ipady'] = 5
@@ -518,7 +577,7 @@ def GetPass(frame):
 
     #Row 1
     g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
-    acctPrompt_l = GenFunc('label', g_ld, 'Choose Account:', g_gd)
+    acctPrompt_l = GenFunc('label', g_ld, 'Account:', g_gd)
     
     g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
     accounts = GetAccounts()
@@ -531,7 +590,7 @@ def GetPass(frame):
     g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
     g_gd['cspan'] = 2
     g_ld['w'] = 30
-    msg_l = GenFunc('label', g_ld, '(msg label)', g_gd)
+    msg_l = GenFunc('label', g_ld, 'Choose Account', g_gd)
     g_gd['cspan'] = 1
     g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
 
@@ -545,6 +604,9 @@ def GetPass(frame):
     go_b.widg.config(command=lambda: GetPassword(combo.get(), msg_l))
 
     getP_frame.pack()
+
+    root.bind_all("<Return>", lambda e: GetPassword(combo.get(), msg_l))
+    root.bind_all('<Escape>', lambda e:Home(frame=getP_frame))
     return
 
 def ChangePassMenu(frame):
@@ -552,6 +614,10 @@ def ChangePassMenu(frame):
     MENU for changing an account password of a certain user
     '''
     hideFrame(frame=frame)
+
+    #Unbinding all hot keys to avoid errors
+    root.unbind_all('<Escape>')
+    root.unbind_all('<Return>')
 
     c_bd = BUTTON_DICT
     #c_bd['w'] = 20
@@ -562,7 +628,7 @@ def ChangePassMenu(frame):
     c_ld['w'] = 14
     c_ed = ENTRY_DICT
     c_ed['master'] = changeP_frame
-    c_ed['width'] = 26
+    c_ed['width'] = default_entry_width
     c_gd = gd
 
     placements = [[0,0],[0,0],[0,0],[0,0],[0,0]]
@@ -583,6 +649,7 @@ def ChangePassMenu(frame):
 
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
     newPass_e = GenFunc('entry', c_ed, '', c_gd)
+    newPass_e.widg.config(show=pass_dot)
 
     #Row 3
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
@@ -590,6 +657,7 @@ def ChangePassMenu(frame):
 
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
     userPass_e = GenFunc('entry', c_ed, '', c_gd)
+    userPass_e.widg.config(show=pass_dot)
 
     #Row 4
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
@@ -607,8 +675,11 @@ def ChangePassMenu(frame):
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
     go_b = GenFunc('button', c_bd, 'Change Password', c_gd)
     go_b.widg.config(command=lambda: ChangePassword(combo.get(), userPass_e.widg.get(), newPass_e.widg.get(), msg_l))
+
     changeP_frame.pack()
     c_ed['width'] = default_entry_width
+    root.bind_all('<Return>', lambda e: ChangePassword(combo.get(), userPass_e.widg.get(), newPass_e.widg.get(), msg_l))
+    root.bind_all('<Escape>', lambda e: Home(frame=changeP_frame))
     return
 
 #WHILE signing IN
@@ -674,10 +745,14 @@ def AddPassConfirm(user, password, confPass, label_obj):
     '''
 
 #Crosschecking credentials to verify a deletion of an account
-def DelPassConfirm(user, accountPass, userPass, label_obj): #LOOK AT :438: modify the function "GetAccounts" to get the current users account names
+def DelPassConfirm(account_name, accountPass, userPass, label_obj): #LOOK AT :438: modify the function "GetAccounts" to get the current users account names
+    if account_name == '':
+        label_obj.widg.config(text='Account doesnt exist')
+        root.after(5000, lambda: Home(frame=delP_frame))
+        return
     print("REACHED CONFIRM FUNC")
     global current_user
-    print(current_user)
+    print(account_name)
     #IF accountPass is matching (Col D), and userPass is matching (col B) AND account is deleted (in col C & D):
     '''
     label_obj.widg.config(text= 'Account deleted')
