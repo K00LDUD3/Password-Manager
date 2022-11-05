@@ -1,2 +1,4 @@
 # Password-Manager
-### the main idea of this basic project is to basically just make a basic managaer that basically manages basic passwords
+##### In this project we use python as the main front end with tkinter
+
+##### A remote Mysql database is used to store the user data and account data
