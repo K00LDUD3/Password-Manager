@@ -1,15 +1,12 @@
-from re import A
 from tkinter import *
 from tkinter import ttk
-import tkinter
-import tkinter.font as font
-from turtle import home
-
 import pyperclip
 from GenFunctions import GenFunc
-
 from random import sample as r
 from random import randint as ri
+import mysql.connector
+
+mydb = mysql.connector.connect(host="sql12.freesqldatabase.com", user="sql12566558", password="FqKgVkn4A7", db="sql12566558")
 
 #Creating window
 root = Tk()
@@ -131,11 +128,14 @@ def GetFreeCoor(arr):
 #Function to get username in a list (FOR DROPDOWN)
 def GetAccounts():
     global current_user
-
-    return ['hello']
-    #Get the account names (only usernames) as a list and return it 
     
-
+    myc = mydb.cursor( )
+    query = f"Select Username from Passwords where CurrUser='{current_user}'"
+    myc.execute(query)
+    li = myc.fetchall( )
+    mydb.commit( )
+    return li
+    
 #Choose whether to sign in or sign up
 def SignChoose(frame):
     '''
@@ -241,7 +241,8 @@ def SignUp(frame):
     # 4,1
     s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
     go_b =  GenFunc('button', s_bd, 'Sign In', s_gd)
-    #go_b.widg.config(command=lambda: SignUpConf(user_e.widg.get(), pass_e.widg.get(), confpass_e.widg.get(), msg_l))
+    go_b.widg.config(command=lambda: SignUpConf(user_e.widg.get(), pass_e.widg.get(), confpass_e.widg.get(), msg_l))
+    
     signUp_frame.pack()
     return
 
@@ -392,7 +393,7 @@ def AddPassMenu(frame):
     
     #Row 1
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
-    userPrompt_l = GenFunc('label', a_ld, 'Username:', a_gd)
+    userPrompt_l = GenFunc('label', a_ld, 'Account Name:', a_gd)
 
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     user_e = GenFunc('entry', a_ed, StringVar(), a_gd)
@@ -429,12 +430,12 @@ def AddPassMenu(frame):
     generatedPass_e = GenFunc('entry', a_ed, '', a_gd)
     generatedPass_e.widg.config(state='readonly', justify=CENTER)
     a_ed['width'] = default_entry_width
-    print(ENTRY_DICT['width'])
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     a_gd['cspan'] = 1
 
     #Row 6
     a_gd['cspan'] = 2
+    a_gd['ipadx'] = 75
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     msg_l = GenFunc('label', a_ld, '(ERR msg)', a_gd)
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
@@ -454,7 +455,6 @@ def AddPassMenu(frame):
     root.bind_all('<Return>', lambda e: AddPassConfirm(user_e.widg.get(), pass_e.widg.get(), confPass_e.widg.get(), msg_l))
     root.bind_all('<Escape>', lambda e: Home(frame=addP_frame))
     return
-
 
 #generating a password for the user
 def GenPass(op_e, opPass_e, opConfPass_e):
@@ -684,65 +684,72 @@ def ChangePassMenu(frame):
 
 #WHILE signing IN
 def CredVerSignIn(user, password, lab_obj):
-    #if the credentials are valid excecute below block
-    '''
-    current_user = '<USERNAME HERE>'
-    return
-    #Leave the return statement alone, theyre  important
-    '''
-    Home(frame=signIn_frame) #T=Include this before the RETURN statement
-    
 
-    #if not valid:
-    '''
-    lab_obj.widg.config(text='Invalid credentials!')
-    return
-    #leave this return statement alone too
-    '''
-
+    mycursorU = mydb.cursor( )
+    mycursorP = mydb.cursor( )
+    mycursorU.execute(f"select User from Users where User='{user}'")
+    log = False
+    users = mycursorU.fetchall( ) #list 
+    if(users==[]):
+        log = False
+    else:
+        mycursorP.execute(f"select Passcode from Users where User='{user}'")
+        passwor = (mycursorP.fetchall( ))[0][0]
+        if(passwor==password):
+            log = True
     
-    return #Can take out this one once the above is done
+    if(log==True):
+        users = users[0][0]
+        #successful
+        global current_user
+        current_user = user
+        Home(signIn_frame)
+        return
+    # acc doesnt exist 
+    lab_obj.widg.config(text='Invalid Credentials!')
+
+    mydb.commit( )
+    return
 
 #User Verify for Signing UP
 def SignUpConf(user, password, conf_password, lab_obj):
-    #Check for password match
-    #check if username exists 
     
-    #IF passwords dont match
-    '''
-    lab_obj.widg.config(text='passwords dont match')
-    return
-    '''
-    
-    #IF username already exists
-    '''
-    lab_obj.widg.config(text='username already exists')
-    return
-    '''
-    
-
-    #IF account is created 
-    '''
-    lab_obj.widg.config(text='Account created')
-    return
-    '''
+    query = "INSERT INTO Users values(%s,%s)"
+    myc = mydb.cursor( )
+    if(password == conf_password):
+        try:
+            acc = [(user,password)]
+            myc.executemany(query,acc)
+            mydb.commit( )
+            lab_obj.widg.config(text='Account Created')
+            return
+        except:
+            lab_obj.widg.config(text="Account alredy exists!")
+            return
+    lab_obj.widg.config(text='Passwords dont match')
+    return  
 
 #Adding new acccount under a certain username
 def AddPassConfirm(user, password, confPass, label_obj):
     print("REACHED CONFIRM FUNC")
 
     global current_user
-    
-    #if passwords match and account creation is successful:
-    '''
-    label_obj.widg.config(text=f'Account Added to {current_user}')
-    return
-    '''
-    #ELSE:
-    '''
-    label_obj.widg.config(text='ERRor msg')    
-    return
-    '''
+    print(f"{current_user=}")
+    #query = f"Update Passwords set Username='{user}', Password='{password}' where CurrUser='{current_user}'"
+    query = "Insert into Passwords values('"+str(current_user)+"',%s,%s)"
+    myc = mydb.cursor( )
+    if(password == confPass):
+        try:
+            acc = [(user,password)]
+            myc.executemany(query,acc)
+            mydb.commit( )
+            label_obj.widg.config(text=f'Account Added to {current_user}')
+            return
+        except:
+            label_obj.widg.config(text=f'A password for this account is already saved\nMaybe you want to "UPDATE"')
+            return
+    label_obj.widg.config(text='Passwords do not match')
+    return  
 
 #Crosschecking credentials to verify a deletion of an account
 def DelPassConfirm(account_name, accountPass, userPass, label_obj): #LOOK AT :438: modify the function "GetAccounts" to get the current users account names
@@ -752,19 +759,38 @@ def DelPassConfirm(account_name, accountPass, userPass, label_obj): #LOOK AT :43
         return
     print("REACHED CONFIRM FUNC")
     global current_user
-    print(account_name)
-    #IF accountPass is matching (Col D), and userPass is matching (col B) AND account is deleted (in col C & D):
-    '''
-    label_obj.widg.config(text= 'Account deleted')
-    return
-    '''
 
-    #IF passwords dont match to their corresponding columns:
-    '''
-    label_obj.widg.config(text= 'invalid credentials')
-    return
-    '''
+    count1 = 0
+    count2 = 0
 
+    myc1 = mydb.cursor( )
+    query1 = f"Select Password from Passwords where Username='{account_name}'"
+    myc1.execute(query1)
+    p1 = myc1.fetchall( )
+
+    myc2 = mydb.cursor( )
+    query2 = f"Select Passcode from Users where User='{current_user}'"
+    myc2.execute(query2)
+    p2 = myc2.fetchall( )
+
+    if(accountPass==p1[0]):
+        count1+=1
+    if(userPass==p2[0]):
+        count2+=1
+
+    if(count1==1) and (count2==1):
+        query = f"delete from Passwords where Username='{account_name}'"
+        myc = mydb.cursor( )
+        myc.execute(query)
+        label_obj.widg.config(text="Successfully deleted password")
+    else:
+        if(count1==0):
+            label_obj.widg.config(text="Account password is wrong")
+        else:
+            label_obj.widg.config(text="Your password is wrong")
+
+
+    mydb.commit( )
     return
 
 #Getting a certain user's password for a certain account
@@ -772,16 +798,35 @@ def GetPassword(account, label_obj):
     global current_user
     print("REACHED CONFIRM FUNC")
 
-    password = 'assign pass here' 
+    query = f"select Password from Passwords where Username='{account}'"
+    myc = mydb.cursor( )
+    myc.execute(query)
+    li = myc.fetchall( )
+    print(li)
+    password = li[0][0]
     label_obj.widg.config(text=f'\"{password}\" copied to clipboard')
 
     pyperclip.copy(password)
 
 #Changing a certain user's password for a certain account
 def ChangePassword(account, user_password, new_account_pass, label_obj):
-    '''Verify the USER_PASSWORD with column B and replace Column D with NEW_ACCOUNT_PASS'''
     print('REACHED VER FUNC')
+    global current_user
     
+    query = f"Select Passcode from Users where User='{current_user}'"
+    myc = mydb.cursor( )
+    myc.execute(query)
+    li = myc.fetchall()
+    p = li[0][0]
+    
+    if(user_password==p):
+        query_update = f"Update Passwords set Password='{new_account_pass}' where Username='{account}'"
+        myc1 = mydb.cursor( )
+        myc1.execute(query_update)
+        label_obj.widg.config(text="Successfully updated password")
+    else:
+        label_obj.widg.config(text="Your password does not match current password")
     return
+
 SignChoose(None)
 root.mainloop()
