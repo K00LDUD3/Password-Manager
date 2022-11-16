@@ -773,9 +773,9 @@ def DelPassConfirm(account_name, accountPass, userPass, label_obj): #LOOK AT :43
     myc2.execute(query2)
     p2 = myc2.fetchall( )
 
-    if(accountPass==p1[0]):
+    if(accountPass==p1[0][0]):
         count1+=1
-    if(userPass==p2[0]):
+    if(userPass==p2[0][0]):
         count2+=1
 
     if(count1==1) and (count2==1):
