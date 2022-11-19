@@ -484,7 +484,7 @@ def DeletePassMenu(frame):
     d_bd['master'] = delP_frame
     d_ld = LABEL_DICT
     d_ld['master'] = delP_frame
-    d_ld['w'] = 14
+    d_ld['w'] = 25
     d_ed = ENTRY_DICT
     d_ed['master'] = delP_frame
     d_ed['width'] = default_entry_width
