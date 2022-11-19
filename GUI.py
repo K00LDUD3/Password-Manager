@@ -437,7 +437,7 @@ def AddPassMenu(frame):
     a_gd['cspan'] = 2
     a_gd['ipadx'] = 75
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
-    msg_l = GenFunc('label', a_ld, '(ERR msg)', a_gd)
+    msg_l = GenFunc('label', a_ld, '', a_gd)
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     a_gd['cspan'] = 1
 
