@@ -10,7 +10,7 @@ mydb = mysql.connector.connect(host="sql12.freesqldatabase.com", user="sql125665
 
 #Creating window
 root = Tk()
-root.title('Used Car Pricing')
+root.title('Password Manager')
 root.resizable(False, False)
 #MISC
 pass_dot = '\u2022'
