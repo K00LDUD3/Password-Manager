@@ -753,44 +753,45 @@ def AddPassConfirm(user, password, confPass, label_obj):
 
 #Crosschecking credentials to verify a deletion of an account
 def DelPassConfirm(account_name, accountPass, userPass, label_obj): #LOOK AT :438: modify the function "GetAccounts" to get the current users account names
-    if account_name == '':
-        label_obj.widg.config(text='Account doesnt exist')
-        root.after(5000, lambda: Home(frame=delP_frame))
-        return
-    print("REACHED CONFIRM FUNC")
-    global current_user
+    try:
+        if account_name == '':
+            label_obj.widg.config(text='Account doesnt exist')
+            root.after(5000, lambda: Home(frame=delP_frame))
+            return
+        print("REACHED CONFIRM FUNC")
+        global current_user
 
-    count1 = 0
-    count2 = 0
+        count1 = 0
+        count2 = 0
 
-    myc1 = mydb.cursor( )
-    query1 = f"Select Password from Passwords where Username='{account_name}'"
-    myc1.execute(query1)
-    p1 = myc1.fetchall( )
+        myc1 = mydb.cursor( )
+        query1 = f"Select Password from Passwords where Username='{account_name}'"
+        myc1.execute(query1)
+        p1 = myc1.fetchall( )
 
-    myc2 = mydb.cursor( )
-    query2 = f"Select Passcode from Users where User='{current_user}'"
-    myc2.execute(query2)
-    p2 = myc2.fetchall( )
+        myc2 = mydb.cursor( )
+        query2 = f"Select Passcode from Users where User='{current_user}'"
+        myc2.execute(query2)
+        p2 = myc2.fetchall( )
 
-    if(accountPass==p1[0][0]):
-        count1+=1
-    if(userPass==p2[0][0]):
-        count2+=1
+        if(accountPass==p1[0][0]):
+            count1+=1
+        if(userPass==p2[0][0]):
+            count2+=1
 
-    if(count1==1) and (count2==1):
-        query = f"delete from Passwords where Username='{account_name}'"
-        myc = mydb.cursor( )
-        myc.execute(query)
-        label_obj.widg.config(text="Successfully deleted password")
-    else:
-        if(count1==0):
-            label_obj.widg.config(text="Account password is wrong")
+        if(count1==1) and (count2==1):
+            query = f"delete from Passwords where Username='{account_name}'"
+            myc = mydb.cursor( )
+            myc.execute(query)
+            label_obj.widg.config(text="Successfully deleted password")
         else:
-            label_obj.widg.config(text="Your password is wrong")
-
-
-    mydb.commit( )
+            if(count1==0):
+                label_obj.widg.config(text="Account password is wrong")
+            else:
+                label_obj.widg.config(text="Your password is wrong")
+        mydb.commit( )
+    except:
+        label_obj.widg.config(text="Account doesnt exist")
     return
 
 #Getting a certain user's password for a certain account
