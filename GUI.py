@@ -719,17 +719,20 @@ def SignUpConf(user, password, conf_password, lab_obj):
     
     query = "INSERT INTO Users values(%s,%s)"
     myc = mydb.cursor( )
-    if(password == conf_password):
-        try:
-            acc = [(user,password)]
-            myc.executemany(query,acc)
-            mydb.commit( )
-            lab_obj.widg.config(text='Account Created')
-            return
-        except:
-            lab_obj.widg.config(text="Account alredy exists!")
-            return
-    lab_obj.widg.config(text='Passwords dont match')
+    if(len(user)<4):
+        lab_obj.widg.config(text='Username length cannot be less than 4')
+    else:
+        if(password == conf_password):
+            try:
+                acc = [(user,password)]
+                myc.executemany(query,acc)
+                mydb.commit( )
+                lab_obj.widg.config(text='Account Created')
+                return
+            except:
+                lab_obj.widg.config(text="Account alredy exists!")
+                return
+        lab_obj.widg.config(text='Passwords dont match')
     return  
 
 #Adding new acccount under a certain username
