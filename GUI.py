@@ -132,7 +132,11 @@ def GetAccounts():
     myc = mydb.cursor( )
     query = f"Select Username from Passwords where CurrUser='{current_user}'"
     myc.execute(query)
-    li = myc.fetchall( )
+    l = myc.fetchall( )
+    li = []
+    for i in range(len(l)):
+        li.append(l[i][0])
+    li.sort( )
     mydb.commit( )
     return li
     
@@ -426,7 +430,7 @@ def AddPassMenu(frame):
     #Row 5
     a_gd['cspan'] = 2
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
-    a_ed['width'] = 55
+    a_ed['width'] = 65
     generatedPass_e = GenFunc('entry', a_ed, '', a_gd)
     generatedPass_e.widg.config(state='readonly', justify=CENTER)
     a_ed['width'] = default_entry_width
@@ -572,7 +576,6 @@ def GetPass(frame):
     g_ld['master'] = getP_frame
     g_ld['w'] = 14
     g_gd = gd
-
     placements = [[0,0],[0,0],[0,0]]
 
     #Row 1
@@ -702,7 +705,7 @@ def CredVerSignIn(user, password, lab_obj):
         users = users[0][0]
         #successful
         global current_user
-        current_user = user
+        current_user = user.lower( )
         Home(signIn_frame)
         return
     # acc doesnt exist 
@@ -735,24 +738,46 @@ def AddPassConfirm(user, password, confPass, label_obj):
 
     global current_user
     print(f"{current_user=}")
-    #query = f"Update Passwords set Username='{user}', Password='{password}' where CurrUser='{current_user}'"
-    query = "Insert into Passwords values('"+str(current_user)+"',%s,%s)"
+    account = user.capitalize( )
+    print(f"{account=}")
+
+    query1 = "Insert into Passwords values('" + str(current_user) + "',%s,%s)"
+    query2 = f"select CurrUser from Passwords where Username='{user}'"
     myc = mydb.cursor( )
+    myc1 = mydb.cursor( )
+    c = 0
+
+    print(f"{password=}")
+    print(f"{confPass=}")
     if(password == confPass):
-        try:
-            acc = [(user,password)]
-            myc.executemany(query,acc)
-            mydb.commit( )
-            label_obj.widg.config(text=f'Account Added to {current_user}')
+
+        myc1.execute(query2)
+        l = myc1.fetchall( )
+        li = []
+        if(l==[]):
+            c = 1
+        else:
+            for i in range(len(l)):
+                li.append(l[i][0])
+        print(f"{li=}")
+        if(c==0):
+            if(current_user in li):
+                label_obj.widg.config(text=f'You have already added a password for this account\nMaybe you want to "CHANGE"')
+            else:
+                c = 1
+        if(c==1):
+            acc = [(account,password)]
+            myc.executemany(query1,acc)
+            label_obj.widg.config(text=f'Account Added to {current_user}')  
+            mydb.commit( )      
             return
-        except:
-            label_obj.widg.config(text=f'A password for this account is already saved\nMaybe you want to "UPDATE"')
-            return
-    label_obj.widg.config(text='Passwords do not match')
+    else:
+        label_obj.widg.config(text='Passwords do not match')
     return  
 
 #Crosschecking credentials to verify a deletion of an account
-def DelPassConfirm(account_name, accountPass, userPass, label_obj): #LOOK AT :438: modify the function "GetAccounts" to get the current users account names
+def DelPassConfirm(account_name, accountPass, userPass, label_obj):
+
     try:
         if account_name == '':
             label_obj.widg.config(text='Account doesnt exist')
@@ -780,34 +805,38 @@ def DelPassConfirm(account_name, accountPass, userPass, label_obj): #LOOK AT :43
             count2+=1
 
         if(count1==1) and (count2==1):
-            query = f"delete from Passwords where Username='{account_name}'"
+            query = f"delete from Passwords where Username='{account_name}' and CurrUser='{current_user}'"
             myc = mydb.cursor( )
             myc.execute(query)
             label_obj.widg.config(text="Successfully deleted password")
+            mydb.commit( )
         else:
             if(count1==0):
                 label_obj.widg.config(text="Account password is wrong")
             else:
                 label_obj.widg.config(text="Your password is wrong")
-        mydb.commit( )
     except:
         label_obj.widg.config(text="Account doesnt exist")
     return
 
 #Getting a certain user's password for a certain account
 def GetPassword(account, label_obj):
-    global current_user
-    print("REACHED CONFIRM FUNC")
+    try:
+        global current_user
+        print("REACHED CONFIRM FUNC")
 
-    query = f"select Password from Passwords where Username='{account}'"
-    myc = mydb.cursor( )
-    myc.execute(query)
-    li = myc.fetchall( )
-    print(li)
-    password = li[0][0]
-    label_obj.widg.config(text=f'\"{password}\" copied to clipboard')
-
-    pyperclip.copy(password)
+        query = f"select Password from Passwords where Username='{account}' and CurrUser='{current_user}'"
+        myc = mydb.cursor( )
+        myc.execute(query)
+        li = myc.fetchall( )
+        print(li)
+        password = li[0][0]
+        label_obj.widg.config(text=f'\"{password}\" copied to clipboard')
+        pyperclip.copy(password)
+        mydb.commit( )
+    except:
+        label_obj.widg.config(text="[ERROR]")
+    return
 
 #Changing a certain user's password for a certain account
 def ChangePassword(account, user_password, new_account_pass, label_obj):
@@ -821,10 +850,11 @@ def ChangePassword(account, user_password, new_account_pass, label_obj):
     p = li[0][0]
     
     if(user_password==p):
-        query_update = f"Update Passwords set Password='{new_account_pass}' where Username='{account}'"
+        query_update = f"Update Passwords set Password='{new_account_pass}' where Username='{account}' and CurrUser='{current_user}'"
         myc1 = mydb.cursor( )
         myc1.execute(query_update)
         label_obj.widg.config(text="Successfully updated password")
+        mydb.commit( )
     else:
         label_obj.widg.config(text="Your password does not match current password")
     return
