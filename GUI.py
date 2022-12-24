@@ -29,6 +29,7 @@ getP_frame = LabelFrame(root)
 
 #WIDGET DICTIONARIES (GLOBAL to access anytime)
 #Button features
+default_button_width = 25
 BUTTON_DICT = {
             'master':None,
             'act_bg':None, #Color
@@ -97,13 +98,16 @@ gd = {
             'rspan':1,
             'padx':10,
             'pady':10,
-            'ipadx':None,
-            'ipady':None
+            'ipadx':5,
+            'ipady':5
         }
 
 #Creating hide frame function
 #Used to hide previous frame so that new frame can safely come on screen
 def hideFrame(frame):
+    print("Button Dict Width: ", BUTTON_DICT['w'])
+    print("Label Dict Width: ", LABEL_DICT['w'])
+    print("Entry Dict Width: ", ENTRY_DICT['width'])
     try:
         frame.pack_forget()
         for i in frame.winfo_children():
@@ -155,9 +159,8 @@ def SignChoose(frame):
     current_user = None
     s_gd = gd
     s_bd = BUTTON_DICT
-    s_gd['ipady'] = 5
     s_bd['master'] = signChoose_frame
-    s_bd['w'] = 25
+    s_bd['w'] = default_button_width
 
     placements = [[0], [0], [0]]
 
@@ -196,7 +199,6 @@ def SignUp(frame):
     s_bd = BUTTON_DICT
     s_ld = LABEL_DICT
     s_ed = ENTRY_DICT
-    s_gd['ipady'] = 5
     s_bd['master'] = signUp_frame
     s_ld['master'] = signUp_frame
     s_ed['master'] = signUp_frame
@@ -263,9 +265,9 @@ def SignIn(frame):
 
     s_gd = gd
     s_bd = BUTTON_DICT
+    s_bd['w'] = default_button_width
     s_ld = LABEL_DICT
     s_ed = ENTRY_DICT
-    s_gd['ipady'] = 5
     s_bd['master'] = signIn_frame
     s_ld['master'] = signIn_frame
     s_ed['master'] = signIn_frame
@@ -325,8 +327,7 @@ def Home(frame):
 
     h_gd = gd
     h_bd = BUTTON_DICT
-    h_bd['w'] = 30
-    h_gd['ipady'] = 5
+    h_bd['w'] = default_button_width
     h_bd['master'] = home_frame
 
     placements = [[0,0],[0,0],[0,0]]
@@ -355,10 +356,11 @@ def Home(frame):
 
     #2,0
     h_gd['row'], h_gd['column'], placements = GetFreeCoor(placements)
-    h_bd['w'] = int(BUTTON_DICT['w']*2.2)
+    h_bd['w'] = int(h_bd['w']*2.2)
     h_gd['cspan'] = 2
     back_b = GenFunc('button', h_bd, 'Sign Out', h_gd)
     h_gd['cspan'] = 1
+    h_bd['w'] = default_button_width
     back_b.widg.config(command=lambda: SignChoose(frame=home_frame))
 
     if accounts == []:
@@ -368,7 +370,6 @@ def Home(frame):
         del_b.widg.config(state='disabled')
 
     home_frame.pack()
-    h_bd['w'] = 20
     root.bind_all('<Escape>', lambda e: SignChoose(frame=home_frame))
     return
 
@@ -383,14 +384,14 @@ def AddPassMenu(frame):
     root.unbind_all('<Return>')
 
     a_bd = BUTTON_DICT
-    a_bd['ipady'] = 5
-    a_bd['w'] = 43
+    a_bd['w'] = 1
     a_bd['master'] = addP_frame
     a_ld = LABEL_DICT
     a_ld['master'] = addP_frame
     a_ld['w'] = 14
     a_ed = ENTRY_DICT
     a_ed['master'] = addP_frame
+    a_ed['width'] = 30
     a_gd = gd
 
     placements = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
@@ -421,16 +422,17 @@ def AddPassMenu(frame):
     #Row 4
     a_gd['cspan'] = 2
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
-
+    a_bd['w'] = default_button_width * 2
     generate_b = GenFunc('button', a_bd, 'Generate Password', a_gd)
     generate_b.widg.config(command= lambda: GenPass(generatedPass_e, pass_e, confPass_e))
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     a_gd['cspan'] = 1
+    a_bd['w'] = default_button_width
 
     #Row 5
     a_gd['cspan'] = 2
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
-    a_ed['width'] = 65
+    a_ed['width'] = int(default_entry_width*2.5)
     generatedPass_e = GenFunc('entry', a_ed, '', a_gd)
     generatedPass_e.widg.config(state='readonly', justify=CENTER)
     a_ed['width'] = default_entry_width
@@ -439,14 +441,15 @@ def AddPassMenu(frame):
 
     #Row 6
     a_gd['cspan'] = 2
-    a_gd['ipadx'] = 75
+    a_ld['w'] = 28
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
-    msg_l = GenFunc('label', a_ld, '', a_gd)
+    msg_l = GenFunc('label', a_ld, 'Enter Credentials', a_gd)
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     a_gd['cspan'] = 1
+    a_ld['w'] = 14
 
     #Row 7
-    a_bd['w'] = 20
+    a_bd['w'] = default_button_width
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     back_b = GenFunc('button', a_bd, 'Back', a_gd)
     back_b.widg.config(command= lambda: Home(frame=addP_frame))
@@ -483,7 +486,6 @@ def DeletePassMenu(frame):
     root.unbind_all('<Return>')
 
     d_bd = BUTTON_DICT
-    d_bd['ipady'] = 5
     #d_bd['w'] = 20
     d_bd['master'] = delP_frame
     d_ld = LABEL_DICT
@@ -569,7 +571,6 @@ def GetPass(frame):
     root.unbind_all('<Return>')
 
     g_bd = BUTTON_DICT
-    g_bd['ipady'] = 5
     g_bd['master'] = getP_frame
     #g_bd['w'] = 20
     g_ld = LABEL_DICT
@@ -624,7 +625,6 @@ def ChangePassMenu(frame):
 
     c_bd = BUTTON_DICT
     #c_bd['w'] = 20
-    c_bd['ipady'] = 5
     c_bd['master'] = changeP_frame
     c_ld = LABEL_DICT
     c_ld['master'] = changeP_frame
