@@ -32,21 +32,21 @@ getP_frame = LabelFrame(root)
 default_button_width = 25
 BUTTON_DICT = {
             'master':None,
-            'act_bg':None, #Color
-            'act_fg':None, #Color
-            'bg':None, #Color
-            'fg':None, #Color
+            'act_bg':None, 
+            'act_fg':None, 
+            'bg':None, 
+            'fg':None, 
             'border':None,
-            'font':None, #Font
-            'height':None, #Number
-            'highl_color':None, #Color
-            'image':None, #Img
+            'font':None,
+            'height':None, 
+            'highl_color':None,
+            'image':None, 
             'justify':None,
-            'padx':None, #Number
-            'pady':None, #Number
+            'padx':None, 
+            'pady':None, 
             'relief':None,
             'underline':None,
-            'w':None, #Number WIDTH
+            'w':None,
             'wraplength':None
         }
 #for label features
@@ -105,9 +105,6 @@ gd = {
 #Creating hide frame function
 #Used to hide previous frame so that new frame can safely come on screen
 def hideFrame(frame):
-    print("Button Dict Width: ", BUTTON_DICT['w'])
-    print("Label Dict Width: ", LABEL_DICT['w'])
-    print("Entry Dict Width: ", ENTRY_DICT['width'])
     try:
         frame.pack_forget()
         for i in frame.winfo_children():
@@ -202,7 +199,6 @@ def SignUp(frame):
     s_bd['master'] = signUp_frame
     s_ld['master'] = signUp_frame
     s_ed['master'] = signUp_frame
-    # s_bd['w'] = 20
 
     placements = [[0,0],[0,0],[0,0],[0,0],[0,0]]
 
@@ -316,7 +312,7 @@ def SignIn(frame):
 
 def Home(frame):
     '''
-    Homescreen to display available options(sign out, start pricing)
+    Homescreen to display available options
     '''
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
@@ -486,7 +482,6 @@ def DeletePassMenu(frame):
     root.unbind_all('<Return>')
 
     d_bd = BUTTON_DICT
-    #d_bd['w'] = 20
     d_bd['master'] = delP_frame
     d_ld = LABEL_DICT
     d_ld['master'] = delP_frame
@@ -497,8 +492,7 @@ def DeletePassMenu(frame):
     d_gd = gd
 
     #MISC
-    accounts = GetAccounts()#['hello', 'hellasdfasfas'] #Add below line here
-    '''GetAccounts()''' #func definition at :128:
+    accounts = GetAccounts()
 
 
     placements = [[0,0],[0,0],[0,0],[0,0],[0,0]]
@@ -572,7 +566,6 @@ def GetPass(frame):
 
     g_bd = BUTTON_DICT
     g_bd['master'] = getP_frame
-    #g_bd['w'] = 20
     g_ld = LABEL_DICT
     g_ld['master'] = getP_frame
     g_ld['w'] = 14
@@ -588,7 +581,6 @@ def GetPass(frame):
     combo = ttk.Combobox(master=getP_frame, values= accounts, state= 'readonly', width=23, justify=CENTER)
     combo.current(0)
     combo.grid(row=g_gd['row'], column=g_gd['column'])
-    #combo.bind('<<ComboboxSelected>>', lambda event: msg_l.widg.config(text=''))
 
     #Row 2
     g_gd['row'], g_gd['column'], placements = GetFreeCoor(placements)
@@ -624,7 +616,6 @@ def ChangePassMenu(frame):
     root.unbind_all('<Return>')
 
     c_bd = BUTTON_DICT
-    #c_bd['w'] = 20
     c_bd['master'] = changeP_frame
     c_ld = LABEL_DICT
     c_ld['master'] = changeP_frame
@@ -737,12 +728,10 @@ def SignUpConf(user, password, conf_password, lab_obj):
 
 #Adding new acccount under a certain username
 def AddPassConfirm(user, password, confPass, label_obj):
-    print("REACHED CONFIRM FUNC")
 
     global current_user
-    print(f"{current_user=}")
+
     account = user.capitalize( )
-    print(f"{account=}")
 
     query1 = "Insert into Passwords values('" + str(current_user) + "',%s,%s)"
     query2 = f"select CurrUser from Passwords where Username='{user}'"
@@ -750,8 +739,6 @@ def AddPassConfirm(user, password, confPass, label_obj):
     myc1 = mydb.cursor( )
     c = 0
 
-    print(f"{password=}")
-    print(f"{confPass=}")
     if(password == confPass):
 
         myc1.execute(query2)
@@ -762,7 +749,6 @@ def AddPassConfirm(user, password, confPass, label_obj):
         else:
             for i in range(len(l)):
                 li.append(l[i][0])
-        print(f"{li=}")
         if(c==0):
             if(current_user in li):
                 label_obj.widg.config(text=f'You have already added a password for this account\nMaybe you want to "CHANGE"')
@@ -786,7 +772,6 @@ def DelPassConfirm(account_name, accountPass, userPass, label_obj):
             label_obj.widg.config(text='Account doesnt exist')
             root.after(5000, lambda: Home(frame=delP_frame))
             return
-        print("REACHED CONFIRM FUNC")
         global current_user
 
         count1 = 0
@@ -826,13 +811,10 @@ def DelPassConfirm(account_name, accountPass, userPass, label_obj):
 def GetPassword(account, label_obj):
     try:
         global current_user
-        print("REACHED CONFIRM FUNC")
-
         query = f"select Password from Passwords where Username='{account}' and CurrUser='{current_user}'"
         myc = mydb.cursor( )
         myc.execute(query)
         li = myc.fetchall( )
-        print(li)
         password = li[0][0]
         label_obj.widg.config(text=f'\"{password}\" copied to clipboard')
         pyperclip.copy(password)
@@ -843,7 +825,6 @@ def GetPassword(account, label_obj):
 
 #Changing a certain user's password for a certain account
 def ChangePassword(account, user_password, new_account_pass, label_obj):
-    print('REACHED VER FUNC')
     global current_user
     
     query = f"Select Passcode from Users where User='{current_user}'"
