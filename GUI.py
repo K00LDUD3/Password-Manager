@@ -721,7 +721,7 @@ def SignUpConf(user, password, conf_password, lab_obj):
                 lab_obj.widg.config(text='Account Created')
                 return
             except:
-                lab_obj.widg.config(text="Account alredy exists!")
+                lab_obj.widg.config(text="Account already exists!")
                 return
         lab_obj.widg.config(text='Passwords don\'t match!')
     return  
