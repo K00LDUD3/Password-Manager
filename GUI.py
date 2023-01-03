@@ -242,7 +242,7 @@ def SignUp(frame):
     
     # 4,1
     s_gd['row'], s_gd['column'], placements = GetFreeCoor(placements)
-    go_b =  GenFunc('button', s_bd, 'Sign In', s_gd)
+    go_b =  GenFunc('button', s_bd, 'Sign Up', s_gd)
     go_b.widg.config(command=lambda: SignUpConf(user_e.widg.get(), pass_e.widg.get(), confpass_e.widg.get(), msg_l))
     
     signUp_frame.pack()
@@ -437,7 +437,7 @@ def AddPassMenu(frame):
 
     #Row 6
     a_gd['cspan'] = 2
-    a_ld['w'] = 28
+    a_ld['w'] = 40
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
     msg_l = GenFunc('label', a_ld, 'Enter Credentials', a_gd)
     a_gd['row'], a_gd['column'], placements = GetFreeCoor(placements)
@@ -655,7 +655,7 @@ def ChangePassMenu(frame):
 
     #Row 4
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
-    c_ld['w'] = 30
+    c_ld['w'] = 38
     c_gd['cspan'] = 2
     msg_l = GenFunc('label', c_ld, 'Fill Out Fields', c_gd)
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
@@ -723,7 +723,7 @@ def SignUpConf(user, password, conf_password, lab_obj):
             except:
                 lab_obj.widg.config(text="Account alredy exists!")
                 return
-        lab_obj.widg.config(text='Passwords dont match')
+        lab_obj.widg.config(text='Passwords don\'t match!')
     return  
 
 #Adding new acccount under a certain username
@@ -834,11 +834,14 @@ def ChangePassword(account, user_password, new_account_pass, label_obj):
     p = li[0][0]
     
     if(user_password==p):
-        query_update = f"Update Passwords set Password='{new_account_pass}' where Username='{account}' and CurrUser='{current_user}'"
-        myc1 = mydb.cursor( )
-        myc1.execute(query_update)
-        label_obj.widg.config(text="Successfully updated password")
-        mydb.commit( )
+        if len(new_account_pass) <= 16 and len(new_account_pass) >= 4:
+            query_update = f"Update Passwords set Password='{new_account_pass}' where Username='{account}' and CurrUser='{current_user}'"
+            myc1 = mydb.cursor( )
+            myc1.execute(query_update)
+            label_obj.widg.config(text="Successfully updated password")
+            mydb.commit( )
+        else:
+            label_obj.widg.config(text="Password must be between 4-16 characters")
     else:
         label_obj.widg.config(text="Your password does not match current password")
     return
