@@ -146,6 +146,8 @@ def SignChoose(frame):
     '''
     Sign In/Up FRAME
     '''
+    root.title("Password Manager")
+
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
@@ -185,6 +187,8 @@ def SignUp(frame):
     '''
     Sign Up FRAME
     '''
+    root.title("Sign Up")
+
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
@@ -252,6 +256,8 @@ def SignIn(frame):
     '''
     Sign In FRAME
     '''
+    root.title("Sign In")
+
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
@@ -314,6 +320,8 @@ def Home(frame):
     '''
     Homescreen to display available options
     '''
+    root.title("Main Menu")
+
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
@@ -371,6 +379,7 @@ def Home(frame):
 
 def AddPassMenu(frame):
     '''Adding a password to DB,  MENU'''
+    root.title("Add Password")
 
     #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
@@ -475,6 +484,12 @@ def GenPass(op_e, opPass_e, opConfPass_e):
 
 #Deleting a password from one of the users accounts
 def DeletePassMenu(frame):
+    '''
+    Delete Password Menu
+    '''
+    root.title("Delete Password")
+
+    #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
     #Unbinding all hot keys to avoid errors
@@ -558,6 +573,9 @@ def GetPass(frame):
     '''
     MENU for getting an account password of a certain user
     '''
+    root.title("Get Password")
+
+    #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
     #Unbinding all hot keys to avoid errors
@@ -609,6 +627,9 @@ def ChangePassMenu(frame):
     '''
     MENU for changing an account password of a certain user
     '''
+    root.title("Change Password")
+    
+    #Hiding previous frame to avoid colisions
     hideFrame(frame=frame)
 
     #Unbinding all hot keys to avoid errors
