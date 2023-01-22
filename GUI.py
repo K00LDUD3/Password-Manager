@@ -6,7 +6,7 @@ from random import sample as r
 from random import randint as ri
 import mysql.connector
 
-mydb = mysql.connector.connect(host="sql6.freesqldatabase.com", user="sql6587750", password="HuzqJbNyxz", db="sql6587750")
+mydb = mysql.connector.connect(host="sql12.freesqldatabase.com", user="sql12592571", password="jXW4XBV16P", db="sql12592571")
 
 #Creating window
 root = Tk()
