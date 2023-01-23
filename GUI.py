@@ -6,7 +6,7 @@ from random import sample as r
 from random import randint as ri
 import mysql.connector
 
-mydb = mysql.connector.connect(host="sql12.freesqldatabase.com", user="sql12592571", password="jXW4XBV16P", db="sql12592571")
+mydb = mysql.connector.connect(host="sql12.freesqldatabase.com", user="sql12592643", password="nmntLSeYTd", db="sql12592571")
 
 #Creating window
 root = Tk()
@@ -702,13 +702,13 @@ def CredVerSignIn(user, password, lab_obj):
 
     mycursorU = mydb.cursor( )
     mycursorP = mydb.cursor( )
-    mycursorU.execute(f"select User from Users where User='{user}'")
+    mycursorU.execute(f"select Username from Users where Username='{user}'")
     log = False
     users = mycursorU.fetchall( ) #list 
     if(users==[]):
         log = False
     else:
-        mycursorP.execute(f"select Passcode from Users where User='{user}'")
+        mycursorP.execute(f"select Passcode from Users where Username='{user}'")
         passwor = (mycursorP.fetchall( ))[0][0]
         if(passwor==password):
             log = True
@@ -804,7 +804,7 @@ def DelPassConfirm(account_name, accountPass, userPass, label_obj):
         p1 = myc1.fetchall( )
 
         myc2 = mydb.cursor( )
-        query2 = f"Select Passcode from Users where User='{current_user}'"
+        query2 = f"Select Passcode from Users where Username='{current_user}'"
         myc2.execute(query2)
         p2 = myc2.fetchall( )
 
