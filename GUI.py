@@ -848,7 +848,7 @@ def GetPassword(account, label_obj):
 def ChangePassword(account, user_password, new_account_pass, label_obj):
     global current_user
     
-    query = f"Select Passcode from Users where User='{current_user}'"
+    query = f"Select Passcode from Users where Username='{current_user}'"
     myc = mydb.cursor( )
     myc.execute(query)
     li = myc.fetchall()
