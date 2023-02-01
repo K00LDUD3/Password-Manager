@@ -532,7 +532,7 @@ def DeletePassMenu(frame):
 
     #Row 3
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
-    userPassPrompt_l = GenFunc('label', d_ld, 'Your Password', d_gd)
+    userPassPrompt_l = GenFunc('label', d_ld, 'Your Main Password', d_gd)
 
     d_gd['row'], d_gd['column'], placements = GetFreeCoor(placements)
     userPass_e = GenFunc('entry', d_ed, '', d_gd)
@@ -668,7 +668,7 @@ def ChangePassMenu(frame):
 
     #Row 3
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
-    userPassPrompt_l = GenFunc('label', c_ld, 'Your Password:', c_gd)
+    userPassPrompt_l = GenFunc('label', c_ld, 'Your Main Password:', c_gd)
 
     c_gd['row'], c_gd['column'], placements = GetFreeCoor(placements)
     userPass_e = GenFunc('entry', c_ed, '', c_gd)
