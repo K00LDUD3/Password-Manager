@@ -18,18 +18,6 @@ class GenFunc:
         self.text = text
         self.wd = widg_dict
         self.gd = grid_dict
-        '''
-        gd = {
-            'column':None,
-            'row':None,
-            'cspan':None,
-            'rspan':None,
-            'padx':None,
-            'pady':None,
-            'ipadx':None,
-            'ipady':None
-        }
-        '''
 
         #checking type of widg (button, label, textbox), then call a function to create that specific widg
         if type.upper() == 'BUTTON':
@@ -75,27 +63,6 @@ class GenFunc:
             ipadx= self.gd['ipadx'],
             ipady= self.gd['ipady']
         )
-        '''
-        button_widg_dict = {
-            'master':Nones,
-            'act_bg':None,
-            'act_fg':None,
-            'bg':None,
-            'fg':None,
-            'border':None,
-            'font':None,
-            'height':None,
-            'highl_color':None,
-            'image':None,
-            'justify':None,
-            'padx':None,
-            'pady':None,
-            'relief':None,
-            'underline':None,
-            'w':None,
-            'wraplength':None
-        }
-        '''
         return
 
     #Generating a LABEL using parameters stored in a dictionary
@@ -133,28 +100,6 @@ class GenFunc:
             ipadx= self.gd['ipadx'],
             ipady= self.gd['ipady']
         )
-        '''
-        lab_dict = {
-            'master':None,
-            'anchor':None,
-            'bg':None,
-            'bitmap':None,
-            'bd':None,
-            'font':None,
-            'fg':None,
-            'height':None,
-            'image':None,
-            'justify':None,
-            'padx':None,
-            'pady':None,
-            'relief':None,
-            'text':None,
-            'textvar':None,
-            'underline':None,
-            'w':None,
-            'wraplength':None
-        }   
-        '''
         return
 
     #Generating a ENTRY (aka textbox) using parameters stored in a dictionary
@@ -185,24 +130,4 @@ class GenFunc:
             ipadx= self.gd['ipadx'],
             ipady= self.gd['ipady']
         )
-        '''
-        entry_dict = {
-            'master':None,
-            'bd':None,
-            'height':None,
-            'width':None,
-            'bg':None,
-            'fg':None,
-            'font':None,
-            'insertofftime':None,
-            'insertontime':None,
-            'padx':None,
-            'pady':None,
-            'highthick':None,
-            'charwidth':None,
-            'relief':None,
-            'yscrollcommand':None,
-            'xscrollcommand':None,
-        }
-        '''
         return
