@@ -31,42 +31,21 @@ getP_frame = LabelFrame(root)
 #Button features
 default_button_width = 25
 BUTTON_DICT = {
-            'master':None,
-            'act_bg':None, 
-            'act_fg':None, 
-            'bg':None, 
-            'fg':None, 
-            'border':None,
+            'master':None,             
             'font':None,
-            'height':None, 
-            'highl_color':None,
-            'image':None, 
+            'height':None,        
             'justify':None,
             'padx':None, 
             'pady':None, 
-            'relief':None,
-            'underline':None,
             'w':None,
-            'wraplength':None
         }
 #for label features
 LABEL_DICT = {
             'master':None,
-            'anchor':None,
-            'bg':None,
-            'bitmap':None,
-            'bd':None,
             'font':None,
-            'fg':None,
-            'height':None,
-            'image':None,
-            'justify':None,
             'padx':None,
             'pady':None,
-            'relief':None,
             'text':None,
-            'textvar':None,
-            'underline':None,
             'w':None,
             'wraplength':None
         }   
@@ -74,21 +53,9 @@ LABEL_DICT = {
 default_entry_width = 26
 ENTRY_DICT = {
             'master':None,
-            'bd':None,
-            'height':None,
             'width':default_entry_width,
-            'bg':None,
-            'fg':None,
-            'font':None,
-            'insertofftime':None,
-            'insertontime':None,
             'padx':None,
             'pady':None,
-            'highthick':None,
-            'charwidth':None,
-            'relief':None,
-            'yscrollcommand':None,
-            'xscrollcommand':None,
         }
 #GRID features
 gd = {
@@ -110,7 +77,7 @@ def hideFrame(frame):
         for i in frame.winfo_children():
             i.grid_forget()
             i.destroy()
-    except (TypeError, AttributeError):
+    except:
         pass
     finally:
         return
@@ -822,8 +789,10 @@ def DelPassConfirm(account_name, accountPass, userPass, label_obj):
         else:
             if(count1==0):
                 label_obj.widg.config(text="Account password is wrong")
-            else:
+            elif(count2==0):
                 label_obj.widg.config(text="Your password is wrong")
+            else:
+                label_obj.widg.config(text="Both passwords are wrong")
     except:
         label_obj.widg.config(text="Account doesnt exist")
     return

@@ -40,15 +40,9 @@ class GenFunc:
             text=self.text,
             width=self.wd['w'],
             height=self.wd['height'],
-            highlightbackground=self.wd['highl_color'],
-            background=self.wd['bg'],
-            foreground=self.wd['fg'],
             justify=self.wd['justify'],
             padx=self.wd['padx'],
             pady=self.wd['pady'],
-            wraplength=self.wd['wraplength'],
-            relief=self.wd['relief'],
-            underline=self.wd['underline'],
             style='small.TButton'
         )
 
@@ -72,18 +66,8 @@ class GenFunc:
         self.widg = tk.Label(
             master= self.wd['master'],
             text=  self.text,
-            anchor=  self.wd['anchor'],
-            background=  self.wd['bg'],
-            foreground=  self.wd['fg'],
-            bitmap=  self.wd['bitmap'],
-            bd=  self.wd['bd'],
-            height=  self.wd['height'],
-            image=  self.wd['image'],
-            justify=  self.wd['justify'],
             padx=  self.wd['padx'],
             pady=  self.wd['pady'],
-            relief=  self.wd['relief'],
-            underline=  self.wd['underline'],
             width=  self.wd['w'],
             wraplength=  self.wd['wraplength'],
             #style='small.TButton'
@@ -110,15 +94,6 @@ class GenFunc:
             master= self.wd['master'],
             textvariable= self.text,
             width= self.wd['width'],
-            bd= self.wd['bd'],
-            background= self.wd['bg'],
-            foreground= self.wd['fg'],
-            font= self.wd['font'],
-            insertofftime= self.wd['insertofftime'],
-            insertontime= self.wd['insertontime'],
-            relief= self.wd['relief'],
-            highlightthickness= self.wd['highthick'],
-            xscrollcommand= self.wd['xscrollcommand'],
         )
         self.widg.grid(
             column= self.gd['column'],
